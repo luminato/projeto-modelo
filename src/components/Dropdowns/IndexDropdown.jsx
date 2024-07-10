@@ -19,7 +19,8 @@ const IndexDropdown = () => {
   return (
     <>
       <a
-        className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
+        className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center 
+                    text-xs uppercase font-bold"
         href="#pablo"
         ref={btnDropdownRef}
         onClick={(e) => {
@@ -45,19 +46,22 @@ const IndexDropdown = () => {
         </span>
         <Link
           to="/admin/dashboard"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
+                      text-blueGray-700"
         >
           Dashboard
         </Link>
         <Link
           to="/admin/settings"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
+                      text-blueGray-700"
         >
           Settings
         </Link>
         <Link
           to="/admin/tables"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
+                      text-blueGray-700"
         >
           Tables
         </Link>

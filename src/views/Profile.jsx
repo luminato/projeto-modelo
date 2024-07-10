@@ -3,6 +3,9 @@ import React from "react";
 import AdminNavbar from "@components/Navbars/AdminNavbar.jsx";
 import Footer from "@components/Footers/Footer.jsx";
 
+
+import team2Jpg from "@img/team-2-800x800.jpg";
+
 export default function Profile() {
   return (
     <>
@@ -50,7 +53,7 @@ export default function Profile() {
                     <div className="relative">
                       <img
                         alt="..."
-                        src={require("assets/img/team-2-800x800.jpg").default}
+                        src={team2Jpg}
                         className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                       />
                     </div>
