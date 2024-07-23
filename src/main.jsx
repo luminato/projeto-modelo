@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import './assets/styles/tailwind.css';
+import '@styles/tailwind.css';
 import * as React from "react";
 
 // Importe os layouts e views conforme necessário
@@ -9,6 +9,15 @@ import Auth from '@layouts/Auth.jsx';
 import Landing from '@views/Landing.jsx';
 import Profile from '@views/Profile.jsx';
 import Index from '@views/Index.jsx';
+import Dashboard from '@views/admin/Dashboard.jsx'; 
+import Settings from '@views/admin/Settings.jsx';
+import Tables from '@views/admin/Tables.jsx';
+import Maps from '@views/admin/Maps.jsx';
+import Login from '@views/auth/Login.jsx';
+import Register from '@views/auth/Register.jsx';
+import OffersPage from '@views/OffersPage.jsx';
+import Announce from '@views/Announce';
+import PrivateRoute from '@routes/PrivateRoute.jsx';
 
 // Importe o CSS global (se necessário)
 import '@styles/index.css';
@@ -19,14 +28,55 @@ import {
 } from "react-router-dom";
 import "@styles/index.css";
 
+
 const router = createBrowserRouter([
+  {
+    path: "/announce",
+    element: (
+      <PrivateRoute>
+        <Announce />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/offers",
+    element: <OffersPage />,
+  },
   {
     path: "/admin",
     element: <Admin />,
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+      {
+        path: "tables",
+        element: <Tables />,
+      },
+      {
+        path: "maps",
+        element: <Maps />,
+      },
+    ],
   },
   {
     path: "/auth",
     element: <Auth />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+    ],
   },
   {
     path: "/landing",

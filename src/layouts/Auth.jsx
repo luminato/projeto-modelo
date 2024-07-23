@@ -1,13 +1,9 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // components
 import AuthNavbar from "@components/Navbars/AuthNavbar.jsx";
 import FooterSmall from "@components/Footers/FooterSmall.jsx";
-
-// views
-import Login from "@views/auth/Login.jsx";
-import Register from "@views/auth/Register.jsx";
 
 import registerImg from "@img/register_bg_2.png";
 
@@ -23,11 +19,7 @@ export default function Auth() {
               backgroundImage: "url(" + registerImg + ")",
             }}
           ></div>
-          <Routes>
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
-            <Route path="/auth/*" element={<Navigate to="/auth/login" />} />
-          </Routes>
+          <Outlet />
           <FooterSmall absolute />
         </section>
       </main>

@@ -1,28 +1,94 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-// components
+import { createPopper } from "@popperjs/core";
+import IndexDropdown from "@components/Dropdowns/IndexDropdown.jsx";
+import photoProfile from "@img/profile.jpg";
 
-import IndexDropdown from "@components/Dropdowns/IndexDropdown";
+const UserDropdown = ({ logout }) => {
+  const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
+  const btnDropdownRef = useRef(null);
+  const popoverDropdownRef = useRef(null);
 
-export default function Navbar(props) {
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const openDropdownPopover = () => {
+    createPopper(btnDropdownRef.current, popoverDropdownRef.current, {
+      placement: "bottom-start",
+    });
+    setDropdownPopoverShow(true);
+  };
+
+  const closeDropdownPopover = () => {
+    setDropdownPopoverShow(false);
+  };
+
   return (
     <>
-      <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 
-                      navbar-expand-lg bg-white shadow">
+      <a
+        className="flex items-center cursor-pointer"
+        href="#pablo"
+        ref={btnDropdownRef}
+        onClick={(e) => {
+          e.preventDefault();
+          dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
+        }}
+      >
+        <img
+          src={photoProfile}
+          alt="Profile"
+          className="rounded-full"
+          width="30"
+          height="30"
+        />
+      </a>
+      <div
+        ref={popoverDropdownRef}
+        className={
+          (dropdownPopoverShow ? "block " : "hidden ") +
+          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
+        }
+      >
+        <Link
+          to="/admin/settings"
+          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+        >
+          Settings
+        </Link>
+        <button
+          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          onClick={logout}
+        >
+          Logout
+        </button>
+      </div>
+    </>
+  );
+};
+
+export default function IndexNavbar() {
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const login = () => {
+    setUser({ photoURL: "https://via.placeholder.com/30" });
+  };
+
+  const logout = () => {
+    setUser(null);
+  };
+
+  return (
+    <>
+      <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg bg-white shadow">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <Link
               to="/"
-              className="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 
-                          whitespace-nowrap uppercase"
+              className="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase"
             >
               Vupt!
             </Link>
             <button
-              className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid 
-                          border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+              className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
               type="button"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
@@ -39,10 +105,8 @@ export default function Navbar(props) {
             <ul className="flex flex-col lg:flex-row list-none mr-auto">
               <li className="flex items-center">
                 <a
-                  className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 
-                              flex items-center text-xs uppercase font-bold"
-                  href="https://www.creative-tim.com/learning-lab/tailwind/
-                        react/overview/notus?ref=nr-index-navbar"
+                  className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
+                  href="https://www.creative-tim.com/learning-lab/tailwind/react/overview/notus?ref=nr-index-navbar"
                 >
                   <i className="text-blueGray-400 far fa-file-alt text-lg leading-lg mr-2" />{" "}
                   Docs
@@ -53,58 +117,42 @@ export default function Navbar(props) {
               <li className="flex items-center">
                 <IndexDropdown />
               </li>
-              <li className="flex items-center">
-                <a
-                  className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex 
-                              items-center text-xs uppercase font-bold"
-                  href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdemos.
-                        creative-tim.com%2Fnotus-react%2F%23%2F"
-                  target="_blank"
-                >
-                  <i className="text-blueGray-400 fab fa-facebook text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Share</span>
-                </a>
-              </li>
-
-              <li className="flex items-center">
-                <a
-                  className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex 
-                              items-center text-xs uppercase font-bold"
-                  href="https://twitter.com/intent/
-                        tweet?url=https%3A%2F%2Fdemos.creative-tim.com%
-                        2Fnotus-react%2F%23%2F&text=Start%20your%20development%20with%
-                        20a%20Free%20Tailwind%20CSS%20and%20React%20UI%20Kit%20and%20Admin.%20
-                        Let%20Notus%20React%20amaze%20you%20with%20its%20cool%20features%20and%
-                        20build%20tools%20and%20get%20your%20project%20to%20a%20whole%20new%20level.%
-                        20"
-                  target="_blank"
-                >
-                  <i className="text-blueGray-400 fab fa-twitter text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Tweet</span>
-                </a>
-              </li>
-
-              <li className="flex items-center">
-                <a
-                  className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex 
-                              items-center text-xs uppercase font-bold"
-                  href="https://github.com/creativetimofficial/notus-react?ref=nr-index-navbar"
-                  target="_blank"
-                >
-                  <i className="text-blueGray-400 fab fa-github text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Star</span>
-                </a>
-              </li>
-
-              <li className="flex items-center">
-                <button
-                  className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold 
-                              uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                  type="button"
-                >
-                  <i className="fas fa-arrow-alt-circle-down"></i> Download
-                </button>
-              </li>
+              {user ? (
+                <>
+                  <li className="flex items-center">
+                    <UserDropdown logout={logout} />
+                  </li>
+                  <li className="flex items-center">
+                    <Link
+                      className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                      to="/announce"
+                    >
+                      Anunciar
+                    </Link>
+                  </li>
+                  <li className="flex items-center">
+                      <Link
+                      to="/offers"
+                      className="bg-teal-500 text-white active:bg-teal-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                      >
+                      Ofertas
+                      </Link>
+                  </li>
+                </>
+              ) : (
+                <li className="flex items-center">
+                  <button
+                    className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={login}
+                  >
+                    <Link> 
+                      Login
+                    </Link>
+                    
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>

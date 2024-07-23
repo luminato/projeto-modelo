@@ -1,5 +1,9 @@
 import React from "react";
 
+
+import gitHubImg from "@img/github.svg";
+import googleImg from "@img/google.svg";
+
 export default function Register() {
   return (
     <>
@@ -21,7 +25,7 @@ export default function Register() {
                     <img
                       alt="..."
                       className="w-5 mr-1"
-                      src={require("assets/img/github.svg").default}
+                      src={gitHubImg}
                     />
                     Github
                   </button>
@@ -32,7 +36,7 @@ export default function Register() {
                     <img
                       alt="..."
                       className="w-5 mr-1"
-                      src={require("assets/img/google.svg").default}
+                      src={googleImg}
                     />
                     Google
                   </button>
