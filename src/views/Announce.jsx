@@ -1,12 +1,11 @@
-// src/components/Announce.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import IndexNavbar from "@components/Navbars/IndexNavbar.jsx";
 import Footer from "@components/Footers/Footer.jsx";
 import AlertSuccess from "@components/Alerts/AlertSuccess.jsx";
 import AlertFail from '@components/Alerts/AlertFail.jsx';
 
+// Funções para formatar valores
 function MaskCurrency(value, minimumFractionDigits = 2) {
   const numericValue = parseFloat(value?.toString().replace(/\D/g, '') || '0');
   const result = numericValue / 10 ** minimumFractionDigits;
@@ -38,10 +37,21 @@ export default function Announce() {
   const [alertType, setAlertType] = useState("");
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    setUser(storedUser);
+    // Mock API call to get user data
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Dados do usuário recebidos:', data); // Log dos dados do usuário
+        if (data.length > 0) {
+          setUser(data[0]); // Assume we're getting one user
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching user:', error);
+      });
   }, []);
 
+  // Função para validar o formulário
   const validateForm = () => {
     let errorMessage = "";
     if (!transactionType) {
@@ -61,6 +71,7 @@ export default function Announce() {
     return true;
   };
 
+  // Função para tratar a publicação do anúncio
   function handlePublish() {
     if (!validateForm()) {
       setAlertType("fail");
@@ -68,24 +79,29 @@ export default function Announce() {
       return;
     }
 
-    if (user && user.status === 'under review') {
-      setAlertMessage("Usuário em avaliação não pode criar anúncios.");
-      setAlertType("fail");
-      setShowAlert(true);
-      return;
-    }
+  console.log('Dados do usuário na criação do anúncio:', user); // Log dos dados do usuário na criação do anúncio
+
+  // Verificação do status do usuário
+  if (user?.status === 'under review') {
+    setAlertMessage("Usuário em avaliação não pode criar anúncios.");
+    setAlertType("fail");
+    setShowAlert(true);
+    return;
+  }
 
     const newOffer = {
-      id: Date.now(),
+      offer_id: user ? user.user_id : 123,
       transactionType,
       mileProgram,
       quantity: parseInt(quantity.replace(/\D/g, ""), 10),
       pricePerThousand: parseFloat(
         pricePerThousand.replace(/[^\d,]/g, "").replace(",", ".")
       ),
-      userName: user.username || "Usuário Anônimo",
-      rating: 4,
+      userName: user ? user.username : "Usuário Anônimo", // Adiciona fallback para user
+      rating: user ? user.rating : 4, // Usa a avaliação do usuário mockado
     };
+
+    console.log('Nova oferta criada:', newOffer); // Log da nova oferta criada
 
     const existingOffers = JSON.parse(localStorage.getItem("offers")) || [];
     const updatedOffers = [...existingOffers, newOffer];
@@ -121,6 +137,7 @@ export default function Announce() {
   const handlePriceChange = (e) => {
     const inputValue = e.target.value;
     const formattedValue = MaskCurrency(inputValue);
+    console.log('Valor formatado do preço por milhar:', formattedValue); // Log do valor formatado
     setPricePerThousand(formattedValue);
   };
 
@@ -130,11 +147,12 @@ export default function Announce() {
     }
   }, [pricePerThousand]);
 
-  if (!user) {
-    navigate("/"); // Redireciona para a página inicial se user for null
+  // Redireciona para a página inicial se user for null
+ /* if (!user) {
+    navigate("/"); 
     return null;
   }
-
+*/
   return (
     <>
       <IndexNavbar />
@@ -193,19 +211,17 @@ export default function Announce() {
           </label>
           <input
             type="text"
+            className="block w-full p-2 border rounded-md"
             value={pricePerThousand}
             onChange={handlePriceChange}
-            className="block w-full p-2 border rounded-md"
             placeholder="Digite o valor"
           />
         </div>
         <button
-          className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          type="button"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={handlePublish}
-          disabled={!pricePerThousand || pricePerThousand === "R$ 0,00" || user.status === 'under review'}
         >
-          Publicar
+          Publicar Anúncio
         </button>
       </div>
       <Footer />

@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 const handlers = [
   rest.get("/api/users", (req, res, ctx) => {
     const users = Array.from({ length: 1 }, () => ({
-      id_user: faker.finance.pin({length: 3}),
+      user_id: faker.finance.pin({length: 3}),
       username: faker.person.username(),
       name: faker.person.firstNamename(),
       lastname: faker.person.lastName(),
