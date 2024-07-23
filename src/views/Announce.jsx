@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 import IndexNavbar from "@components/Navbars/IndexNavbar.jsx";
 import Footer from "@components/Footers/Footer.jsx";
 import AlertSuccess from "@components/Alerts/AlertSuccess.jsx";
@@ -89,7 +92,12 @@ export default function Announce() {
     return;
   }
 
+  //EDITOR DE DATA
+  const now = new Date();
+  const formattedDate = format(now, 'dd/MM/yyyy HH:mm:ss', { locale: ptBR });
+
     const newOffer = {
+      date: formattedDate, //UTILIZANDO EDIÇÃO DE DATA ACIMA
       offer_id: user ? user.user_id : 123,
       transactionType,
       mileProgram,
@@ -136,8 +144,7 @@ export default function Announce() {
 
   const handlePriceChange = (e) => {
     const inputValue = e.target.value;
-    const formattedValue = MaskCurrency(inputValue);
-    console.log('Valor formatado do preço por milhar:', formattedValue); // Log do valor formatado
+    const formattedValue = MaskCurrency(inputValue); 
     setPricePerThousand(formattedValue);
   };
 
