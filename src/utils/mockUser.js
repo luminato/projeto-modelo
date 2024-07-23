@@ -2,7 +2,7 @@ export const mockUser = {
   username: "Usuário Teste",
   name: 'Usuário',
   lastname: 'Teste',
-  id: 1,
+  id_user: 1,
   status: "active", // Pode ser 'under review' para testar o caso de usuário em avaliação
 };
 
