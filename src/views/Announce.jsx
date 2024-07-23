@@ -98,7 +98,7 @@ export default function Announce() {
     setPricePerThousand("");
 
     setAlertType("success");
-    setAlertMessage("");
+    setAlertMessage("Anúncio Criado! Seu anúncio foi publicado com sucesso.");
     setShowAlert(true);
   }
 
@@ -141,7 +141,7 @@ export default function Announce() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         {showAlert && (alertType === "success" ? (
           <AlertSuccess onClose={handleCloseAlert}>
-            <b className="capitalize">Anúncio Criado!</b> Seu anúncio foi publicado com sucesso.
+            <b className="capitalize">Anúncio Criado!</b> {alertMessage}
           </AlertSuccess>
         ) : (
           <AlertFail onClose={handleCloseAlert}>
