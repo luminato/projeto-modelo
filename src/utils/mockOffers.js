@@ -1,7 +1,7 @@
 // src/utils/mockOffers.js
 export const mockOffers = [
   {
-    id: 1,
+    id_offer: 1,
     transactionType: "comprar",
     mileProgram: "LATAM",
     quantity: 10000,
