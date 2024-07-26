@@ -1,6 +1,6 @@
-// src/components/Announce.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import supabase from '@supabasePath/supabaseClient';
 
 import IndexNavbar from "@components/Navbars/IndexNavbar.jsx";
 import Footer from "@components/Footers/Footer.jsx";
@@ -50,7 +50,7 @@ export default function Announce() {
       errorMessage = "O campo Programa de milhas é obrigatório e deve ser preenchido.";
     } else if (!quantity) {
       errorMessage = "O campo Quantidade de milhas para negociação é obrigatório e deve ser preenchido.";
-    } else if (!pricePerThousand || pricePerThousand === "R$ 0,00") {
+    } else if (!pricePerThousand || pricePerThousand === "R$ 0,00") {
       errorMessage = "O campo Quanto quer pagar ou Preço do milheiro é obrigatório e deve ser preenchido.";
     }
 
@@ -61,7 +61,7 @@ export default function Announce() {
     return true;
   };
 
-  function handlePublish() {
+  async function handlePublish() {
     if (!validateForm()) {
       setAlertType("fail");
       setShowAlert(true);
@@ -76,20 +76,30 @@ export default function Announce() {
     }
 
     const newOffer = {
-      id: Date.now(),
-      transactionType,
-      mileProgram,
-      quantity: parseInt(quantity.replace(/\D/g, ""), 10),
-      pricePerThousand: parseFloat(
-        pricePerThousand.replace(/[^\d,]/g, "").replace(",", ".")
-      ),
-      userName: user.username || "Usuário Anônimo",
-      rating: 4,
+      transaction_type: transactionType,
+      mileage_program: mileProgram,
+      price_per_thousand: parseFloat(pricePerThousand.replace(/[^\d,]/g, "").replace(",", ".")),
+      quantity: parseInt(quantity, 10),
+      user_first_name: user?.first_name || "primeiro", 
+      user_last_name: user?.last_name || "ultimo",
+      user_id: user?.id || 1, 
+      user_rating: user?.rating || 2, 
+      user_phone_number: user?.phone_number || "5581986429085", 
+      created_at: new Date().toISOString(),
+      user_photo_url: user?.photo_url || "", 
     };
 
-    const existingOffers = JSON.parse(localStorage.getItem("offers")) || [];
-    const updatedOffers = [...existingOffers, newOffer];
-    localStorage.setItem("offers", JSON.stringify(updatedOffers));
+    const { data, error } = await supabase
+      .from('offers')
+      .insert([newOffer]);
+
+    if (error) {
+      console.error('Erro ao publicar o anúncio:', error.message);
+      setAlertMessage("Falha ao criar o anúncio. Tente novamente.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
 
     setTransactionType("comprar");
     setMileProgram("");
@@ -125,7 +135,7 @@ export default function Announce() {
   };
 
   useEffect(() => {
-    if (pricePerThousand === "" || pricePerThousand === "R$ 0,00") {
+    if (pricePerThousand === "" || pricePerThousand === "R$ 0,00") {
       setPricePerThousand("");
     }
   }, [pricePerThousand]);
@@ -203,7 +213,6 @@ export default function Announce() {
           className="bg-lightBlue-500 text-white active:bg-lightBlue-600 font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           type="button"
           onClick={handlePublish}
-          disabled={!pricePerThousand || pricePerThousand === "R$ 0,00" || user.status === 'under review'}
         >
           Publicar
         </button>
