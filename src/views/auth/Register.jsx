@@ -5,7 +5,7 @@ import supabase from '@supabasePath/supabaseClient';
 import AlertFail from '@components/Alerts/AlertFail'; // Atualize o caminho se necessário
 import AlertSuccess from '@components/Alerts/AlertSuccess'; // Atualize o caminho se necessário
 
-const photoDefault = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon';
+
 
 
 export default function Register() {
@@ -83,7 +83,6 @@ export default function Register() {
           phone_number: `55${whatsappDDD}${whatsappNumber}`, // Armazena o WhatsApp completo
           status: "UNDER REVIEW",
           rating: 5,
-          photo_url: photoDefault,
         },
       ]);
 
@@ -104,14 +103,14 @@ export default function Register() {
             <div className="rounded-t mb-0 px-6 py-6">
               <div className="text-center mb-3">
                 <h6 className="text-blueGray-500 text-sm font-bold">
-                  Sign up with
+                  Cadastre-se com
                 </h6>
               </div>
               <hr className="mt-6 border-b-1 border-blueGray-300" />
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
               <div className="text-blueGray-400 text-center mb-3 font-bold">
-                <small>Or sign up with credentials</small>
+                <small>Ou cadastre-se com credenciais</small>
               </div>
               {alert.message && (alert.type === 'success' ? 
                 <AlertSuccess message={alert.message} /> : 
@@ -138,7 +137,7 @@ export default function Register() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="firstName"
                   >
-                    First Name
+                    Primeiro Nome
                   </label>
                   <input
                     type="text"
@@ -153,7 +152,7 @@ export default function Register() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="lastName"
                   >
-                    Last Name
+                    Sobrenome
                   </label>
                   <input
                     type="text"
@@ -183,7 +182,7 @@ export default function Register() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="password"
                   >
-                    Password
+                    Senha
                   </label>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -237,7 +236,7 @@ export default function Register() {
                     type="button"
                     onClick={handleRegister}
                   >
-                    Create Account
+                    Criar conta
                   </button>
                 </div>
                 <div className="flex flex-wrap mt-6">
@@ -246,7 +245,7 @@ export default function Register() {
                       to="/auth/login"
                       className="text-blueGray-200"
                     >
-                      <small>Already have an account?</small>
+                      <small>Já tem uma conta?</small>
                     </Link>
                   </div>
                 </div>
