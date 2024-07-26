@@ -1,7 +1,6 @@
 import React from "react";
 
-// components
-
+// Components
 import CardSettings from "@components/Cards/CardSettings.jsx";
 import CardProfile from "@components/Cards/CardProfile.jsx";
 
@@ -19,5 +18,3 @@ export default function Settings() {
     </>
   );
 }
-
-//

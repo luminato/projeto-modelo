@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { createPopper } from "@popperjs/core";
 import IndexDropdown from "@components/Dropdowns/IndexDropdown.jsx";
 import photoProfile from "@img/profile.jpg";
+import { FaSignInAlt } from 'react-icons/fa'; // Importando ícone de login
 
 const UserDropdown = ({ logout }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
@@ -117,6 +118,14 @@ export default function IndexNavbar() {
               <li className="flex items-center">
                 <IndexDropdown />
               </li>
+              <li className="flex items-center">
+                <Link
+                  to="/offers"
+                  className="bg-teal-500 text-white active:bg-teal-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                >
+                  Ofertas
+                </Link>
+              </li>
               {user ? (
                 <>
                   <li className="flex items-center">
@@ -130,27 +139,16 @@ export default function IndexNavbar() {
                       Anunciar
                     </Link>
                   </li>
-                  <li className="flex items-center">
-                      <Link
-                      to="/offers"
-                      className="bg-teal-500 text-white active:bg-teal-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                      >
-                      Ofertas
-                      </Link>
-                  </li>
                 </>
               ) : (
                 <li className="flex items-center">
-                  <button
-                    className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={login}
+                  <Link
+                    to="/auth/login" // Alterado para redirecionar para a página de login
+                    className="bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150 flex items-center"
                   >
-                    <Link> 
-                      Login
-                    </Link>
-                    
-                  </button>
+                    <FaSignInAlt className="mr-2" /> {/* Adicionando ícone de login */}
+                    Login
+                  </Link>
                 </li>
               )}
             </ul>

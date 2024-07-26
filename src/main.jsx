@@ -3,8 +3,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@styles/tailwind.css';
 import * as React from 'react';
 
-// Importe os layouts e views conforme necessário
-import Admin from '@layouts/Admin.jsx';
 import Auth from '@layouts/Auth.jsx';
 import Landing from '@views/Landing.jsx';
 import Profile from '@views/Profile.jsx';
@@ -16,25 +14,23 @@ import Maps from '@views/admin/Maps.jsx';
 import Login from '@views/auth/Login.jsx';
 import Register from '@views/auth/Register.jsx';
 import OffersPage from '@views/OffersPage.jsx';
-import Announce from '@views/Announce';
+import Announce from '@views/Announce.jsx';
 import PrivateRoute from '@routes/PrivateRoute.jsx';
 
-// Importe o CSS global (se necessário)
 import '@styles/index.css';
 
-// Condicional para inicializar o MSW em ambiente de desenvolvimento
-if (process.env.NODE_ENV === 'development') {
-  import('@mocks/browser').then(({ worker }) => {
-    worker.start();
-  });
-}
+// Remover o MSW se você não quiser usá-lo
+// if (process.env.NODE_ENV === 'development') {
+//   import('@mocks/browser').then(({ worker }) => {
+//     worker.start();
+//   });
+// }
 
 import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
 
-// Defina as rotas do aplicativo
 const router = createBrowserRouter([
   {
     path: '/announce',
@@ -50,7 +46,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <Admin />,
+    element: (
+      <PrivateRoute>
+        <Settings />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: 'dashboard',
@@ -85,28 +85,21 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/landing',
-    element: <Landing />,
-  },
-  {
-    path: '/profile',
-    element: <Profile />,
-  },
-  {
     path: '/',
     element: <Index />,
+    children: [
+      {
+        path: 'profile',
+        element: <Profile />,
+      },
+      {
+        path: '/',
+        element: <Index />,
+      },
+    ],
   },
 ]);
 
-// Encontre o elemento root na DOM
-const rootElement = document.getElementById('root');
-
-// Crie a raiz do React
-const root = createRoot(rootElement);
-
-// Renderize o aplicativo
-root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+createRoot(document.getElementById('root')).render(
+  <RouterProvider router={router} />
 );

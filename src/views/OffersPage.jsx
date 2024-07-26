@@ -4,7 +4,7 @@ import Footer from "@components/Footers/Footer.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import supabase from '@supabasePath/supabaseClient'; // Certifique-se de que o caminho está correto
+import supabase from '@supabasePath/supabaseClient'; 
 
 export default function OffersPage() {
   const [offers, setOffers] = useState([]);
@@ -75,19 +75,19 @@ export default function OffersPage() {
                 <div key={offer.id} className="w-full md:w-1/2 px-4 mb-4">
                   <div
                     className={`bg-white rounded-lg shadow-md p-6 border border-${
-                      offer.transaction_type === "comprar" ? "blue" : "green"
+                      offer.transaction_type === "buy" ? "blue" : "green"
                     }-500`}
-                    style={{ minHeight: '300px' }} // Ajuste a altura mínima conforme necessário
+                    style={{ minHeight: '200px' }} // Ajuste a altura mínima conforme necessário
                   >
                     <div className="flex flex-col h-full justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-6"> {/* Aumenta o espaçamento entre os elementos */}
                           <div
                             className={`text-xl font-bold ${
-                              offer.transaction_type === "comprar" ? "text-blue-500" : "text-green-500"
+                              offer.transaction_type === "buy" ? "text-blue-500" : "text-green-500"
                             }`}
                           >
-                            {offer.transaction_type === "comprar" ? "Compra" : "Venda"}
+                            {offer.transaction_type === "buy" ? "Compra" : "Venda"}
                           </div>
                           <div
                             className={`text-lg font-semibold ${getMileProgramColor(offer.mileage_program)} text-white px-2 py-1 rounded`}

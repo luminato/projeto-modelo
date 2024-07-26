@@ -67,7 +67,7 @@ export default function LastOffers() {
           <div key={offer.id} className="w-full md:w-1/2 lg:w-1/3 px-4 mb-4">
             <div
               className={`bg-white rounded-lg shadow-md border border-${
-                offer.transactionType === "comprar" ? "blue" : "green"
+                offer.transactionType === "buy" ? "blue" : "green"
               }-500`}
               style={{ minHeight: '200px' }} // Definindo altura mínima fixa para os cards
             >
@@ -75,10 +75,10 @@ export default function LastOffers() {
                 <div className="flex items-center justify-between mb-4">
                   <div
                     className={`text-xl font-bold ${
-                      offer.transactionType === "comprar" ? "text-blue-500" : "text-green-500"
+                      offer.transactionType === "buy" ? "text-blue-500" : "text-green-500"
                     }`}
                   >
-                    {offer.transactionType === "comprar" ? "Compra" : "Venda"}
+                    {offer.transactionType === "buy" ? "Compra" : "Venda"}
                   </div>
                   <div
                     className={`text-lg font-semibold ${getMileProgramColor(offer.mileProgram)} text-white px-2 py-1 rounded`}

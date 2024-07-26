@@ -28,7 +28,7 @@ function MaskQuantity(value) {
 export default function Announce() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [transactionType, setTransactionType] = useState("comprar");
+  const [transactionType, setTransactionType] = useState("buy");
   const [mileProgram, setMileProgram] = useState("");
   const [quantity, setQuantity] = useState("");
   const [formattedQuantity, setFormattedQuantity] = useState("");
@@ -101,7 +101,7 @@ export default function Announce() {
       return;
     }
 
-    setTransactionType("comprar");
+    setTransactionType("buy");
     setMileProgram("");
     setQuantity("");
     setFormattedQuantity("");
@@ -166,8 +166,8 @@ export default function Announce() {
             value={transactionType}
             onChange={(e) => setTransactionType(e.target.value)}
           >
-            <option value="comprar">Comprar</option>
-            <option value="vender">Vender</option>
+            <option value="buy">Comprar</option>
+            <option value="sell">Vender</option>
           </select>
         </div>
         <div className="mb-6">
@@ -199,7 +199,7 @@ export default function Announce() {
         </div>
         <div className="mb-6">
           <label className="block text-lg font-semibold mb-2">
-            {transactionType === "comprar" ? "Quanto quer pagar? (a cada 1000 milhas)" : "Preço do milheiro? (a cada 1000 milhas)"}
+            {transactionType === "buy" ? "Quanto quer pagar? (a cada 1000 milhas)" : "Preço do milheiro? (a cada 1000 milhas)"}
           </label>
           <input
             type="text"

@@ -15,6 +15,7 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@mocks': path.resolve(__dirname, 'mocks'),
       '@supabasePath': path.resolve(__dirname, 'src/supabase'), 
+      '@context': path.resolve(__dirname, 'src/context'),
     },
   },
 });

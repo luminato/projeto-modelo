@@ -4,15 +4,7 @@ import PropTypes from "prop-types";
 // components
 
 import TableDropdown from "@components/Dropdowns/TableDropdown.jsx";
-import bootStrapJpg from "@img/bootstrap.jpg";
-import team1Jpg from "@img/team-1-800x800.jpg";
-import team2Jpg from "@img/team-2-800x800.jpg";
-import team3Jpg from "@img/team-3-800x800.jpg";
-import team4Jpg from "@img/team-4-470x470.png";
-import angularImg from "@img/angular.jpg";
-import sketch from "@img/sketch.jpg";
-import vueImg from "@img/vue.jpg";
-import reactImg from "@img/react.jpg";
+
 
 
 
