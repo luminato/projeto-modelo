@@ -77,7 +77,7 @@ export default function OffersPage() {
                     className={`bg-white rounded-lg shadow-md p-6 border border-${
                       offer.transaction_type === "comprar" ? "blue" : "green"
                     }-500`}
-                    style={{ minHeight: '300px' }} // Ajuste a altura mínima conforme necessário
+                    style={{ minHeight: '230px' }} // Ajuste a altura mínima conforme necessário
                   >
                     <div className="flex flex-col h-full justify-between">
                       <div>
