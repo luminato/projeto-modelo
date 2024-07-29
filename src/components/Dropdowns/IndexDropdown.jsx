@@ -1,120 +1,137 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { createPopper } from "@popperjs/core";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Não usado atualmente
+import supabase from '@supabasePath/supabaseClient';
+import AnnouncementForm from '@components/Forms/AnnouncementForm.jsx';
+import IndexNavbar from "@components/Navbars/IndexNavbar.jsx";
+import Footer from "@components/Footers/Footer.jsx";
+import AlertSuccess from "@components/Alerts/AlertSuccess.jsx";
+import AlertFail from '@components/Alerts/AlertFail.jsx';
 
-const IndexDropdown = () => {
-  // dropdown props
-  const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
-  const btnDropdownRef = React.createRef();
-  const popoverDropdownRef = React.createRef();
-  const openDropdownPopover = () => {
-    createPopper(btnDropdownRef.current, popoverDropdownRef.current, {
-      placement: "bottom-start",
-    });
-    setDropdownPopoverShow(true);
+function MaskCurrency(value, minimumFractionDigits = 2) {
+  const numericValue = parseFloat(value?.toString().replace(/\D/g, '') || '0');
+  const result = numericValue / 10 ** minimumFractionDigits;
+  return result.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits,
+  });
+}
+
+function MaskQuantity(value) {
+  const numericValue = parseInt(value?.toString().replace(/\D/g, '') || '0', 10);
+  return numericValue.toLocaleString('pt-BR', {
+    minimumFractionDigits: 0,
+    style: 'decimal',
+  });
+}
+
+export default function Announce() {
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
+
+  const handlePublish = async (offer) => {
+    setAlertMessage(""); // Limpar a mensagem de alerta antes de iniciar
+    setAlertType(""); // Limpar o tipo de alerta antes de iniciar
+
+    // Obter a sessão atual do Supabase
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error('Erro ao obter sessão:', sessionError.message);
+      setAlertMessage("Erro ao obter dados do usuário. Tente novamente.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    const storedUser = session?.user ?? null;
+
+    console.log('Usuário armazenado:', storedUser); // Adicionado para verificar o usuário
+
+    if (!storedUser) { // Adicionado para verificar se o usuário está logado
+      setAlertMessage("Usuário não está logado.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    // Verificar o status do usuário
+    if (storedUser.user_metadata.status === 'under review') {
+      setAlertMessage("Usuário em avaliação não pode criar anúncios.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    // Buscar dados do usuário no banco de dados
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('user_id, user_first_name, user_last_name, user_rating, user_phone_number')
+      .eq('user_id', storedUser.id)
+      .single();
+
+    console.log('Dados do usuário do banco de dados:', userData); // Adicionado para verificar os dados do usuário
+
+    if (userError || !userData) {
+      setAlertMessage("Dados do usuário não encontrados.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    // Criar novo anúncio com dados do usuário
+    const newOffer = {
+      ...offer,
+      user_first_name: userData.user_first_name,
+      user_last_name: userData.user_last_name,
+      user_id: userData.user_id,
+      user_rating: userData.user_rating,
+      user_phone_number: userData.user_phone_number,
+      created_at: new Date().toISOString(),
+    };
+
+    // Inserir a nova oferta na tabela `offers`
+    const { data, error } = await supabase
+      .from('offers')
+      .insert([newOffer]);
+
+    if (error) {
+      console.error('Erro ao publicar o anúncio:', error.message);
+      setAlertMessage("Falha ao criar o anúncio. Tente novamente.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    setAlertType("success");
+    setAlertMessage("Anúncio Criado! Seu anúncio foi publicado com sucesso.");
+    setShowAlert(true);
   };
-  const closeDropdownPopover = () => {
-    setDropdownPopoverShow(false);
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+    setAlertType("");
   };
+
   return (
     <>
-      <a
-        className="hover:text-blueGray-500 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center 
-                    text-xs uppercase font-bold"
-        href="#pablo"
-        ref={btnDropdownRef}
-        onClick={(e) => {
-          e.preventDefault();
-          dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
-        }}
-      >
-        Demo Pages
-      </a>
-      <div
-        ref={popoverDropdownRef}
-        className={
-          (dropdownPopoverShow ? "block " : "hidden ") +
-          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
-        }
-      >
-        <span
-          className={
-            "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
-          }
-        >
-          Admin Layout
-        </span>
-        <Link
-          to="/admin/dashboard"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
-                      text-blueGray-700"
-        >
-          Dashboard
-        </Link>
-        <Link
-          to="/admin/settings"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
-                      text-blueGray-700"
-        >
-          Settings
-        </Link>
-        <Link
-          to="/admin/tables"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent 
-                      text-blueGray-700"
-        >
-          Tables
-        </Link>
-        <Link
-          to="/admin/maps"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Maps
-        </Link>
-        <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
-        <span
-          className={
-            "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
-          }
-        >
-          Auth Layout
-        </span>
-        <Link
-          to="/auth/login"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Login
-        </Link>
-        <Link
-          to="/auth/register"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Register
-        </Link>
-        <div className="h-0 mx-4 my-2 border border-solid border-blueGray-100" />
-        <span
-          className={
-            "text-sm pt-2 pb-0 px-4 font-bold block w-full whitespace-nowrap bg-transparent text-blueGray-400"
-          }
-        >
-          No Layout
-        </span>
-        <Link
-          to="/landing"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Landing
-        </Link>
-        <Link
-          to="/profile"
-          className="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-        >
-          Profile
-        </Link>
-        
+      <IndexNavbar />
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 px-4 py-8">
+          {showAlert && (alertType === "success" ? (
+            <AlertSuccess onClose={handleCloseAlert}>
+              <b className="capitalize">Anúncio Criado!</b> {alertMessage}
+            </AlertSuccess>
+          ) : (
+            <AlertFail onClose={handleCloseAlert}>
+              <b>Ocorreu um erro!</b> {alertMessage}
+            </AlertFail>
+          ))}
+          <AnnouncementForm onSubmit={handlePublish} />
+        </main>
+        <Footer />
       </div>
     </>
   );
-};
-
-export default IndexDropdown;
+}

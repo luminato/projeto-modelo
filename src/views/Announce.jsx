@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Não usado atualmente
 import supabase from '@supabasePath/supabaseClient';
-import AnnouncementForm from '@components/Forms/AnnouncementForm.jsx'
+import AnnouncementForm from '@components/Forms/AnnouncementForm.jsx';
 import IndexNavbar from "@components/Navbars/IndexNavbar.jsx";
 import Footer from "@components/Footers/Footer.jsx";
 import AlertSuccess from "@components/Alerts/AlertSuccess.jsx";
@@ -25,34 +25,75 @@ function MaskQuantity(value) {
   });
 }
 
-
-
 export default function Announce() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
 
   const handlePublish = async (offer) => {
-    const storedUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    setAlertMessage(""); // Limpar a mensagem de alerta antes de iniciar
+    setAlertType(""); // Limpar o tipo de alerta antes de iniciar
 
-    if (storedUser && storedUser.status === 'under review') {
+    // Obter a sessão atual do Supabase
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error('Erro ao obter sessão:', sessionError.message);
+      setAlertMessage("Erro ao obter dados do usuário. Tente novamente.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    const storedUser = session?.user ?? null;
+
+    if (!storedUser) { // Adicionado para verificar se o usuário está logado
+      setAlertMessage("Usuário não está logado.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    // Log para verificar os dados do usuário
+    console.log('Dados do usuário armazenado:', storedUser);
+
+    // Verificar o status do usuário
+    if (storedUser.user_metadata.status === 'under review') {
       setAlertMessage("Usuário em avaliação não pode criar anúncios.");
       setAlertType("fail");
       setShowAlert(true);
       return;
     }
 
+    // Buscar dados do usuário no banco de dados
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('user_id, user_first_name, user_last_name, user_rating, user_phone_number')
+      .eq('user_id', storedUser.id)
+      .single();
+
+    // Log para verificar os dados do usuário retornados pelo banco de dados
+    console.log('Dados do usuário do banco de dados:', userData);
+
+    if (userError || !userData) {
+      setAlertMessage("Dados do usuário não encontrados.");
+      setAlertType("fail");
+      setShowAlert(true);
+      return;
+    }
+
+    // Criar novo anúncio com dados do usuário
     const newOffer = {
       ...offer,
-      user_first_name: storedUser?.first_name || "primeiro",
-      user_last_name: storedUser?.last_name || "ultimo",
-      user_id: storedUser?.id || 1,
-      user_rating: storedUser?.rating || 2,
-      user_phone_number: storedUser?.phone_number || "5581986429085",
+      user_first_name: userData.user_first_name,
+      user_last_name: userData.user_last_name,
+      user_id: userData.user_id,
+      user_rating: userData.user_rating,
+      user_phone_number: userData.user_phone_number,
       created_at: new Date().toISOString(),
-      user_photo_url: storedUser?.photo_url || "",
     };
 
+    // Inserir a nova oferta na tabela `offers`
     const { data, error } = await supabase
       .from('offers')
       .insert([newOffer]);
